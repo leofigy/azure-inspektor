@@ -42,7 +42,12 @@ func main(){
 		fmt.Printf("ResourceType: %s \n", name)
 		// has attributes (mostly primitive types)
 		for att, desc :=  range spec.Attributes{
-			fmt.Printf("* %s      : %+v \n", att, desc)
+			fmt.Printf("* %s      : %s \n", att, desc.Type.GoString())
+		}
+
+		fmt.Println("---------- NESTED --------------")
+		for nested, desc := range spec.BlockTypes {
+			fmt.Printf("* %s      : %s \n", nested, desc.Nesting.String())
 		}
 	}
 }
