@@ -38,7 +38,11 @@ func main(){
 		os.Exit(1)
 	}
 
-	for name, desc := range schema.ResourceTypes {
-		fmt.Printf("%s:\n, %+v", name, desc)
+	for name, spec := range schema.ResourceTypes {
+		fmt.Printf("ResourceType: %s \n", name)
+		// has attributes (mostly primitive types)
+		for att, desc :=  range spec.Attributes{
+			fmt.Printf("* %s      : %+v \n", att, desc)
+		}
 	}
 }
