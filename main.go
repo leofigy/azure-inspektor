@@ -80,8 +80,6 @@ func main() {
 
 		}()
 
-		//	fmt.Printf("* %s      : %s \n", nested, desc.Nesting.String())
-
 	}
 
 	waitgroup.Wait()
@@ -124,6 +122,13 @@ var templateFile = template.Must(template.New("").Funcs(structsFuncMap).Parse(`/
 // at {{ .Timestamp }}
 // based on the terraform schema
 package armtf
+
+import(
+	"errors"
+	"strings"
+	"github.com/leofigy/structs"
+)
+
 {{ $CamelName := camelCase .Name}}
 
 type {{ $CamelName }} struct {
@@ -156,4 +161,30 @@ func (r *{{ $CamelName }}) Computed () []string {
 	}
 }
 
+//Translate to terraform names
+func (r *{{ $CamelName }}) Terraform () (out map[string]interface{},err error) {
+	out = make(map[string]interface{})
+	// Unmarshal a bit hacky but just temporary
+	fields := structs.Fields(r)
+	for _, e := range fields{
+
+		// by now we don't care if is non zero
+		// upper layer will take a look to that
+
+		hclTag := e.Tag("hcl")
+		// meanwhile just translate to the other name 
+		// (nothing to do yet with the cty type)
+		tag := strings.SplitN(hclTag, ",", 2)
+		// this error should never happen if this is the case
+		// then somebody modified this autogen file
+		if len(tag) != 2 {
+			err = errors.New("Spourious struct tag @" + r.TerraformType())
+			return
+		}
+		// Note the second attribute will be later updated
+		name := tag[0]
+		out[name] = e.Value()
+	}
+	return
+}
 `))
