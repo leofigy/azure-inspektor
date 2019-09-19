@@ -149,7 +149,11 @@ func (r *{{ $CamelName }}) SchemaBlocks() (map[string]map[string]struct{}) {
 	return map[string]map[string]struct{}{
 		{{- range $k, $v := .Blocks }}
 			"{{ $k}}" : map[string]struct{}{
-				{{- range $ik, $v  := $v.Block.Attributes }}
+				{{- range $ik, $iv  := $v.Block.Attributes }}
+					"{{ $ik }}" : struct{}{},
+				{{- end }}
+				// inner blocks
+				{{- range $ik, $iv := $v.Block.BlockTypes }}
 					"{{ $ik }}" : struct{}{},
 				{{- end }}
 			},
