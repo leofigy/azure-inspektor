@@ -101,14 +101,11 @@ import (
 	"github.com/thetonymaster/orbital-module-azure/azurerm/properties/hcl"
 )
 
-{{ $constructor := constructorName .Name }}
-{{ $privateConstructor := privateConstructorName .Name }}
-{{ $inputAttributes := inputAttributeName .Name }}
-{{ $resource := resourceName .Name }}
-
+{{ $constructor := constructorName .Name }} {{ $privateConstructor := privateConstructorName .Name }} {{ $inputAttributes := inputAttributeName .Name }} {{ $resource := resourceName .Name }}
 // {{ $constructor }} returns an interface
 func {{ $constructor }} () ARMProperty {
-	return {{ $privateConstructor }}()
+	resource := {{ $privateConstructor }}()
+	return &resource
 }
 
 // for nested resources
